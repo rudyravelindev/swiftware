@@ -8,6 +8,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// routes
+app.use('/api/auth', require('./routes/auth'));
+
 app.get('/', (req, res) => {
   res.json({ message: 'Server is running' });
 });
