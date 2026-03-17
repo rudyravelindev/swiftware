@@ -10,6 +10,7 @@ app.use(express.json());
 
 // routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/jobs', require('./routes/jobs'));
 
 app.get('/', (req, res) => {
   res.json({ message: 'Server is running' });
