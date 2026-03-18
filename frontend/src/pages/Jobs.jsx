@@ -21,7 +21,7 @@ const Jobs = () => {
       try {
         const res = await api.get('/jobs');
         setJobs(res.data);
-      } catch (err) {
+      } catch {
         toast.error('Failed to load jobs');
       } finally {
         setLoading(false);
@@ -35,7 +35,7 @@ const Jobs = () => {
       const res = await api.put(`/jobs/${id}`, { status });
       setJobs(jobs.map((job) => (job._id === id ? res.data : job)));
       toast.success('Status updated');
-    } catch (err) {
+    } catch {
       toast.error('Failed to update status');
     }
   };

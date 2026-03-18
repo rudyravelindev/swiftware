@@ -18,7 +18,7 @@ const Dashboard = () => {
       try {
         const res = await api.get('/jobs/stats');
         setStats(res.data);
-      } catch (err) {
+      } catch {
         toast.error('Failed to load stats');
       } finally {
         setLoading(false);

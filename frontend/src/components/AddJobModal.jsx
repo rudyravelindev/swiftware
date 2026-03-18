@@ -28,7 +28,7 @@ const AddJobModal = ({ onClose, onJobAdded }) => {
       onJobAdded(res.data);
       toast.success('Job added!');
       onClose();
-    } catch (err) {
+    } catch {
       toast.error('Failed to add job');
     } finally {
       setLoading(false);
