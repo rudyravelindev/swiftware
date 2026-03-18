@@ -15,3 +15,25 @@ button {
   -webkit-appearance: none;
   appearance: none;
 }
+
+body[data-theme='light'] {
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --nav-bg: #ffffff;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --input-bg: #ffffff;
+}
+
+body[data-theme='dark'] {
+  --bg: #0f0f13;
+  --surface: #1a1a24;
+  --nav-bg: #13131a;
+  --text: #f9fafb;
+  --text-muted: #9ca3af;
+  --border: #2a2a3a;
+  --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --input-bg: #1a1a24;
+}

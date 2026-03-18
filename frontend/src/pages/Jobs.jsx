@@ -5,6 +5,8 @@ import api from '../api/axios';
 import toast from 'react-hot-toast';
 import styles from './Jobs.module.css';
 import AddJobModal from '../components/AddJobModal';
+import { useTheme } from '../context/useTheme';
+
 const Jobs = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -12,6 +14,7 @@ const Jobs = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const { darkMode, toggleDark } = useTheme();
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -62,6 +65,9 @@ const Jobs = () => {
             className={styles.navBtn}
           >
             Dashboard
+          </button>
+          <button onClick={toggleDark} className={styles.themeBtn}>
+            {darkMode ? '☀️' : '🌙'}
           </button>
           <button onClick={handleLogout} className={styles.logoutBtn}>
             Logout

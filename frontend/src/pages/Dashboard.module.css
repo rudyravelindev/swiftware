@@ -1,10 +1,10 @@
 .page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f3ff 0%, #eff6ff 100%);
+  background: var(--bg);
 }
 
 .nav {
-  background: white;
+  background: var(--nav-bg);
   padding: 16px 40px;
   display: flex;
   align-items: center;
@@ -27,7 +27,7 @@
 
 .greeting {
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -64,9 +64,18 @@
   border-color: #ef4444;
 }
 
-.logoutBtn:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
+.themeBtn {
+  padding: 9px 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+.themeBtn:hover {
+  background: var(--surface);
 }
 
 .container {
@@ -83,7 +92,7 @@
 .title {
   font-size: 42px;
   font-weight: 800;
-  color: #111827;
+  color: var(--text);
   margin-bottom: 8px;
   letter-spacing: -1px;
 }
@@ -94,9 +103,10 @@
 
 .subtitle {
   font-size: 16px;
-  color: #6b7280;
+  color: var(--text-muted);
   margin-bottom: 0;
 }
+
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -105,12 +115,12 @@
 }
 
 .statCard {
-  background: white;
+  background: var(--surface);
   border-radius: 16px;
   padding: 28px 20px;
   text-align: center;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border);
   transition:
     transform 0.2s,
     box-shadow 0.2s;
@@ -129,20 +139,7 @@
 
 .statCard:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-.applied::before {
-  background: #7c3aed;
-}
-.interview::before {
-  background: #f59e0b;
-}
-.offer::before {
-  background: #10b981;
-}
-.rejected::before {
-  background: #ef4444;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 }
 
 .statNumber {
@@ -152,25 +149,54 @@
   line-height: 1;
 }
 
-.applied .statNumber {
-  color: #7c3aed;
-}
-.interview .statNumber {
-  color: #f59e0b;
-}
-.offer .statNumber {
-  color: #10b981;
-}
-.rejected .statNumber {
-  color: #ef4444;
-}
-
 .statLabel {
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #9ca3af;
+  color: var(--text-muted);
+}
+
+.notApplied::before {
+  background: #9ca3af;
+}
+.notApplied .statNumber {
+  color: #6b7280;
+}
+
+.inProgress::before {
+  background: #2563eb;
+}
+.inProgress .statNumber {
+  color: #2563eb;
+}
+
+.applied::before {
+  background: #7c3aed;
+}
+.applied .statNumber {
+  color: #7c3aed;
+}
+
+.interview::before {
+  background: #f59e0b;
+}
+.interview .statNumber {
+  color: #f59e0b;
+}
+
+.offer::before {
+  background: #10b981;
+}
+.offer .statNumber {
+  color: #10b981;
+}
+
+.rejected::before {
+  background: #ef4444;
+}
+.rejected .statNumber {
+  color: #ef4444;
 }
 
 .actions {
@@ -200,23 +226,24 @@
 }
 
 .progressSection {
-  background: white;
+  background: var(--surface);
   border-radius: 16px;
   padding: 28px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--card-shadow);
   margin-bottom: 32px;
+  border: 1px solid var(--border);
 }
 
 .progressTitle {
   font-size: 15px;
   font-weight: 700;
-  color: #374151;
+  color: var(--text);
   margin-bottom: 16px;
 }
 
 .progressBar {
   height: 10px;
-  background: #f3f4f6;
+  background: var(--border);
   border-radius: 100px;
   overflow: hidden;
   margin-bottom: 8px;
@@ -231,7 +258,7 @@
 
 .progressLabel {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--text-muted);
   text-align: right;
 }
 
@@ -248,16 +275,4 @@
   .container {
     padding: 40px 16px;
   }
-}
-.notApplied::before {
-  background: #9ca3af;
-}
-.notApplied .statNumber {
-  color: #6b7280;
-}
-.inProgress::before {
-  background: #2563eb;
-}
-.inProgress .statNumber {
-  color: #2563eb;
 }
