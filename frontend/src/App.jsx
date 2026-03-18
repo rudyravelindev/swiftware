@@ -3,7 +3,9 @@ import { AuthProvider } from './context/AuthProvider';
 import { Toaster } from 'react-hot-toast';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
+import Jobs from './pages/Jobs';
 
 function App() {
   return (
@@ -17,7 +19,7 @@ function App() {
             path="/dashboard"
             element={
               <PrivateRoute>
-                <h1>Dashboard</h1>
+                <Dashboard />
               </PrivateRoute>
             }
           />
@@ -25,7 +27,7 @@ function App() {
             path="/jobs"
             element={
               <PrivateRoute>
-                <h1>Jobs Page</h1>
+                <Jobs />
               </PrivateRoute>
             }
           />

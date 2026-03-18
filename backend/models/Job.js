@@ -19,8 +19,15 @@ const jobSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['applied', 'interview', 'offer', 'rejected'],
-      default: 'applied',
+      enum: [
+        'not_applied',
+        'in_progress',
+        'applied',
+        'interview',
+        'offer',
+        'rejected',
+      ],
+      default: 'not_applied',
     },
     location: {
       type: String,
@@ -31,6 +38,14 @@ const jobSchema = new mongoose.Schema(
       default: '',
     },
     careersUrl: {
+      type: String,
+      default: '',
+    },
+    companyType: {
+      type: String,
+      default: '',
+    },
+    companySize: {
       type: String,
       default: '',
     },
