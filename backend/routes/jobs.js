@@ -54,7 +54,7 @@ router.put('/:id', protect, async (req, res) => {
     const job = await Job.findOneAndUpdate(
       { _id: req.params.id, user: req.user },
       req.body,
-      { new: true },
+      { returnDocument: 'after' },
     );
     if (!job) {
       return res.status(404).json({ message: 'Job not found' });
