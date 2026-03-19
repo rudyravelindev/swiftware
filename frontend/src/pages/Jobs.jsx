@@ -14,6 +14,7 @@ const Jobs = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
   const { darkMode, toggleDark } = useTheme();
 
   useEffect(() => {
@@ -54,6 +55,10 @@ const Jobs = () => {
       job.location.toLowerCase().includes(search.toLowerCase()) ||
       job.companyType.toLowerCase().includes(search.toLowerCase()),
   );
+
+  const handleJobUpdated = (updatedJob) => {
+    setJobs(jobs.map((job) => (job._id === updatedJob._id ? updatedJob : job)));
+  };
 
   return (
     <div className={styles.page}>
@@ -116,7 +121,12 @@ const Jobs = () => {
               </thead>
               <tbody>
                 {filtered.map((job) => (
-                  <tr key={job._id}>
+                  <tr
+                    key={job._id}
+                    onClick={() => setSelectedJob(job)}
+                    className={styles.row}
+                  >
+                    {' '}
                     <td className={styles.company}>{job.company}</td>
                     <td>{job.location}</td>
                     <td className={styles.type}>{job.companyType}</td>
@@ -129,6 +139,7 @@ const Jobs = () => {
                           target="_blank"
                           rel="noreferrer"
                           className={styles.link}
+                          onClick={(e) => e.stopPropagation()}
                         >
                           Apply
                         </a>
@@ -142,6 +153,7 @@ const Jobs = () => {
                         onChange={(e) =>
                           handleStatusChange(job._id, e.target.value)
                         }
+                        onClick={(e) => e.stopPropagation()}
                         className={`${styles.select} ${styles[job.status]}`}
                       >
                         <option value="not_applied">Not Applied</option>
@@ -163,6 +175,14 @@ const Jobs = () => {
         <AddJobModal
           onClose={() => setShowModal(false)}
           onJobAdded={handleJobAdded}
+        />
+      )}
+
+      {selectedJob && (
+        <AddJobModal
+          job={selectedJob}
+          onClose={() => setSelectedJob(null)}
+          onJobUpdated={handleJobUpdated}
         />
       )}
     </div>

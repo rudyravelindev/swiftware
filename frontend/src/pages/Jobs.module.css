@@ -194,6 +194,10 @@
   text-decoration: underline;
 }
 
+.row {
+  cursor: pointer;
+}
+
 .select {
   padding: 6px 10px;
   border-radius: 6px;
