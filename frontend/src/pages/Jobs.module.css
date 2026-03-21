@@ -281,6 +281,71 @@
   color: var(--text-muted);
   font-weight: 500;
 }
+.templateBtn {
+  padding: 10px 16px;
+  background: transparent;
+  color: #7c3aed;
+  border: 1px solid #7c3aed;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.templateBtn:hover {
+  background: #ede9fe;
+}
+
+.exportBtn {
+  padding: 10px 16px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.exportBtn:hover {
+  background: #059669;
+}
+
+.importBtn {
+  padding: 10px 16px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.importBtn:hover {
+  background: #1d4ed8;
+}
+
+.filterSelect {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  background: var(--input-bg);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.filterSelect:focus {
+  border-color: #7c3aed;
+}
 
 /* Responsiveness  */
 @media (max-width: 640px) {

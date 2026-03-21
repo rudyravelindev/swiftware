@@ -48,6 +48,32 @@ router.get('/', protect, async (req, res) => {
   }
 });
 
+// Import multiple jobs
+router.post('/import', protect, async (req, res) => {
+  try {
+    const { jobs } = req.body;
+
+    const validStatuses = [
+      'not_applied',
+      'in_progress',
+      'applied',
+      'interview',
+      'offer',
+      'rejected',
+    ];
+    const jobsWithUser = jobs.map((job) => ({
+      ...job,
+      user: req.user,
+      status: validStatuses.includes(job.status) ? job.status : 'not_applied',
+    }));
+    const created = await Job.insertMany(jobsWithUser);
+
+    res.status(201).json(created);
+  } catch (error) {
+    console.log('Import error:', error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
 // Update a job
 router.put('/:id', protect, async (req, res) => {
   try {

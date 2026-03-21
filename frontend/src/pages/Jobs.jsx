@@ -6,6 +6,8 @@ import toast from 'react-hot-toast';
 import styles from './Jobs.module.css';
 import AddJobModal from '../components/AddJobModal';
 import { useTheme } from '../context/useTheme';
+import * as XLSX from 'xlsx';
+import ImportModal from '../components/ImportModal';
 
 const Jobs = () => {
   const { logout } = useAuth();
@@ -19,6 +21,7 @@ const Jobs = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { darkMode, toggleDark } = useTheme();
   const jobsPerPage = 20;
+  const [showImportModal, setShowImportModal] = useState(false);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -55,6 +58,77 @@ const Jobs = () => {
 
   const handleJobUpdated = (updatedJob) => {
     setJobs(jobs.map((job) => (job._id === updatedJob._id ? updatedJob : job)));
+  };
+
+  const handleDownloadTemplate = () => {
+    const template = [
+      {
+        Company: 'Example Company',
+        Location: 'Seattle WA',
+        Type: 'SaaS',
+        Size: '~500',
+        'Careers URL': 'https://example.com/careers',
+        Notes: 'Any notes here',
+        Status: 'not_applied',
+      },
+    ];
+    const worksheet = XLSX.utils.json_to_sheet(template);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Jobs');
+    XLSX.writeFile(workbook, 'swiftware-template.xlsx');
+  };
+
+  const handleImport = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        const data = new Uint8Array(event.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(worksheet);
+
+        const newJobs = rows.map((row) => ({
+          company: row['Company'] || '',
+          position: 'Software Engineer',
+          location: row['Location'] || '',
+          companyType: row['Type'] || '',
+          companySize: row['Size'] || '',
+          careersUrl: row['Careers URL'] || '',
+          notes: row['Notes'] || '',
+          status: row['Status'] || 'not_applied',
+        }));
+
+        const res = await api.post('/jobs/import', { jobs: newJobs });
+        setJobs((prev) => [...res.data, ...prev]);
+        toast.success(`${res.data.length} jobs imported!`);
+      } catch {
+        toast.error('Failed to import jobs');
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  };
+  const handleExport = () => {
+    const exportData = filtered.map((job) => ({
+      Company: job.company,
+      Location: job.location,
+      Type: job.companyType,
+      Size: job.companySize,
+      'Careers URL': job.careersUrl,
+      Notes: job.notes,
+      Status: job.status,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Jobs');
+    const filename =
+      statusFilter === 'all'
+        ? 'swiftware-all-jobs.xlsx'
+        : `swiftware-${statusFilter}-jobs.xlsx`;
+    XLSX.writeFile(workbook, filename);
   };
 
   const filtered = jobs.filter((job) => {
@@ -124,6 +198,21 @@ const Jobs = () => {
               <option value="offer">Offer</option>
               <option value="rejected">Rejected</option>
             </select>
+            <button
+              onClick={handleDownloadTemplate}
+              className={styles.templateBtn}
+            >
+              Template
+            </button>
+            <button onClick={handleExport} className={styles.exportBtn}>
+              Export
+            </button>
+            <button
+              onClick={() => setShowImportModal(true)}
+              className={styles.importBtn}
+            >
+              Import
+            </button>
             <button
               onClick={() => setShowModal(true)}
               className={styles.addBtn}
@@ -236,6 +325,17 @@ const Jobs = () => {
           job={selectedJob}
           onClose={() => setSelectedJob(null)}
           onJobUpdated={handleJobUpdated}
+          onJobDeleted={(id) => {
+            setJobs(jobs.filter((job) => job._id !== id));
+            setSelectedJob(null);
+          }}
+        />
+      )}
+      {showImportModal && (
+        <ImportModal
+          onClose={() => setShowImportModal(false)}
+          onFileSelect={handleImport}
+          onDownloadTemplate={handleDownloadTemplate}
         />
       )}
     </div>
