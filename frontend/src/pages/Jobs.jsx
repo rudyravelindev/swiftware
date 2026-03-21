@@ -13,9 +13,12 @@ const Jobs = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [showModal, setShowModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const { darkMode, toggleDark } = useTheme();
+  const jobsPerPage = 20;
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -49,16 +52,24 @@ const Jobs = () => {
   const handleJobAdded = (newJob) => {
     setJobs([newJob, ...jobs]);
   };
-  const filtered = jobs.filter(
-    (job) =>
-      job.company.toLowerCase().includes(search.toLowerCase()) ||
-      job.location.toLowerCase().includes(search.toLowerCase()) ||
-      job.companyType.toLowerCase().includes(search.toLowerCase()),
-  );
 
   const handleJobUpdated = (updatedJob) => {
     setJobs(jobs.map((job) => (job._id === updatedJob._id ? updatedJob : job)));
   };
+
+  const filtered = jobs.filter((job) => {
+    const matchesSearch =
+      job.company.toLowerCase().includes(search.toLowerCase()) ||
+      job.location.toLowerCase().includes(search.toLowerCase()) ||
+      job.companyType.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || job.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const totalPages = Math.ceil(filtered.length / jobsPerPage);
+  const start = (currentPage - 1) * jobsPerPage;
+  const end = currentPage * jobsPerPage;
+  const paginated = filtered.slice(start, end);
 
   return (
     <div className={styles.page}>
@@ -91,9 +102,28 @@ const Jobs = () => {
               type="text"
               placeholder="Search company, location, type..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
               className={styles.search}
             />
+            <select
+              value={statusFilter}
+              onChange={(e) => {
+                setStatusFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className={styles.filterSelect}
+            >
+              <option value="all">All Status</option>
+              <option value="not_applied">Not Applied</option>
+              <option value="in_progress">In Progress</option>
+              <option value="applied">Applied</option>
+              <option value="interview">Interview</option>
+              <option value="offer">Offer</option>
+              <option value="rejected">Rejected</option>
+            </select>
             <button
               onClick={() => setShowModal(true)}
               className={styles.addBtn}
@@ -106,71 +136,94 @@ const Jobs = () => {
         {loading ? (
           <p>Loading jobs...</p>
         ) : (
-          <div className={styles.tableWrapper}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Company</th>
-                  <th>Location</th>
-                  <th>Type</th>
-                  <th>Size</th>
-                  <th>Notes</th>
-                  <th>Careers</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((job) => (
-                  <tr
-                    key={job._id}
-                    onClick={() => setSelectedJob(job)}
-                    className={styles.row}
-                  >
-                    {' '}
-                    <td className={styles.company}>{job.company}</td>
-                    <td>{job.location}</td>
-                    <td className={styles.type}>{job.companyType}</td>
-                    <td className={styles.type}>{job.companySize}</td>
-                    <td className={styles.type}>{job.notes}</td>
-                    <td>
-                      {job.careersUrl ? (
-                        <a
-                          href={job.careersUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className={styles.link}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          Apply
-                        </a>
-                      ) : (
-                        '—'
-                      )}
-                    </td>
-                    <td>
-                      <select
-                        value={job.status}
-                        onChange={(e) =>
-                          handleStatusChange(job._id, e.target.value)
-                        }
-                        onClick={(e) => e.stopPropagation()}
-                        className={`${styles.select} ${styles[job.status]}`}
-                      >
-                        <option value="not_applied">Not Applied</option>
-                        <option value="in_progress">In Progress</option>
-                        <option value="applied">Applied</option>
-                        <option value="interview">Interview</option>
-                        <option value="offer">Offer</option>
-                        <option value="rejected">Rejected</option>
-                      </select>
-                    </td>
+          <div>
+            <div className={styles.tableWrapper}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Company</th>
+                    <th>Location</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Notes</th>
+                    <th>Careers</th>
+                    <th>Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {paginated.map((job) => (
+                    <tr
+                      key={job._id}
+                      onClick={() => setSelectedJob(job)}
+                      className={styles.row}
+                    >
+                      <td className={styles.company}>{job.company}</td>
+                      <td>{job.location}</td>
+                      <td className={styles.type}>{job.companyType}</td>
+                      <td className={styles.type}>{job.companySize}</td>
+                      <td className={styles.type}>{job.notes}</td>
+                      <td>
+                        {job.careersUrl ? (
+                          <a
+                            href={job.careersUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={styles.link}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Apply
+                          </a>
+                        ) : (
+                          '—'
+                        )}
+                      </td>
+                      <td>
+                        <select
+                          value={job.status}
+                          onChange={(e) =>
+                            handleStatusChange(job._id, e.target.value)
+                          }
+                          onClick={(e) => e.stopPropagation()}
+                          className={`${styles.select} ${styles[job.status]}`}
+                        >
+                          <option value="not_applied">Not Applied</option>
+                          <option value="in_progress">In Progress</option>
+                          <option value="applied">Applied</option>
+                          <option value="interview">Interview</option>
+                          <option value="offer">Offer</option>
+                          <option value="rejected">Rejected</option>
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className={styles.pagination}>
+              <button
+                onClick={() => setCurrentPage((p) => p - 1)}
+                disabled={currentPage === 1}
+                className={styles.pageBtn}
+              >
+                ← Previous
+              </button>
+              <span className={styles.pageInfo}>
+                Page {currentPage} — showing {start + 1}-
+                {Math.min(end, filtered.length)} of {filtered.length} companies
+              </span>
+              <button
+                onClick={() => setCurrentPage((p) => p + 1)}
+                disabled={currentPage === totalPages}
+                className={styles.pageBtn}
+              >
+                Next →
+              </button>
+            </div>
           </div>
         )}
       </div>
+
       {showModal && (
         <AddJobModal
           onClose={() => setShowModal(false)}
