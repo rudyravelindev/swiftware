@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useAuth } from '../context/useAuth';
 
 import styles from './Landing.module.css';
@@ -6,10 +7,11 @@ import styles from './Landing.module.css';
 const Landing = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  if (user) {
-    navigate('/dashboard');
-    return null;
-  }
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
   return (
     <div className={styles.page}>
       {/* Navbar */}
