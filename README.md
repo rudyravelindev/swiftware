@@ -6,7 +6,7 @@ A full stack MERN job application tracker built to help developers manage their 
 
 ## Live Demo
 
-🔗 **App:** https://swiftware-k9yn.vercel.app  
+🔗 **App:** 🔗 **App:** https://swiftwarejobs.vercel.app
 🔗 **API:** https://swiftware-omega.vercel.app
 
 ## Screenshots
